@@ -218,10 +218,10 @@
             </div>
 
             <div class="config-item">
-                <label>📧 Email Recipients (will be AUTO-SENT by server)</label>
-                <input type="text" id="emailRecipients" placeholder="person1@example.com, person2@example.com">
+                <label>📧 Email Recipients (REQUIRED)</label>
+                <input type="text" id="emailRecipients" placeholder="person1@example.com, person2@example.com" required>
                 <div style="font-size: 0.85em; color: #ff9999; margin-top: 5px;">
-                    <strong>NEW:</strong> Server automatically sends emails - no manual "Send" needed!
+                    Server automatically sends emails when triggered - no manual "Send" needed!
                 </div>
             </div>
 
@@ -357,8 +357,13 @@
             const triggerUrls = document.getElementById('triggerUrls').value.trim();
 
             // Validation
-            if (!emailRecipients && !secretMessage && !uploadedFile && !triggerUrls) {
-                alert('⚠ Please configure at least one action:\n\n• Email recipients\n• Secret message\n• File upload\n• URLs to open');
+            if (!emailRecipients) {
+                alert('⚠ Email recipients are REQUIRED!\n\nThe dead man\'s switch needs someone to send emails to.\n\nPlease add at least one email address.');
+                return;
+            }
+
+            if (!secretMessage && !uploadedFile && !triggerUrls) {
+                alert('⚠ Please add content to send:\n\n• Secret message\n• File upload\n• URLs to open\n\nYou have email recipients, but nothing to send them!');
                 return;
             }
 
