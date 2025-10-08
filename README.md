@@ -4,7 +4,13 @@
 
 Unlike browser-only solutions, this actually works when you're incapacitated because the timer runs on a server with automatic email delivery.
 
-🎮 **[Try Live Demo](https://ringmast4r.github.io/DEAD-MANS-TRIGGER/)** (Browser-only version - for testing UI)
+---
+
+## 🚨 IMPORTANT: Read Before Contributing
+
+**ALL commits must be authored by ringmast4r only.**
+
+See `COMMIT-RULES.md` for commit guidelines. Never include AI attribution or co-authorship tags in commits to this repository.
 
 ---
 
@@ -27,7 +33,8 @@ Unlike browser-only solutions, this actually works when you're incapacitated bec
 - ✅ **File attachments** - Automatically emails files when triggered
 - ✅ **Persistent storage** - SQLite database survives server restarts
 - ✅ **Simple web interface** - Easy setup and check-in from any browser
-- ✅ **Multiple email services** - Works with Gmail, SendGrid, Mailgun, Brevo, etc.
+- ✅ **Privacy-focused** - Success page hides sensitive data
+- ✅ **SendGrid powered** - Reliable email delivery via Web API
 
 ---
 
@@ -36,83 +43,98 @@ Unlike browser-only solutions, this actually works when you're incapacitated bec
 ### Prerequisites
 
 - Node.js v14+ ([Download](https://nodejs.org/))
-- Email account for sending (Gmail, Outlook, or email service API)
+- SendGrid account (free tier: 100 emails/day)
 
 ### Installation
 
 ```bash
 # 1. Clone or download this repo
-cd dead-mans-trigger
+git clone https://github.com/Ringmast4r/DEAD-MANS-TRIGGER.git
+cd DEAD-MANS-TRIGGER
 
 # 2. Install dependencies
 npm install
 
 # 3. Configure email
 cp .env.example .env
-# Edit .env with your email credentials
+# Edit .env with your SendGrid API key
 
 # 4. Start server
 npm start
 
 # 5. Open web interface
-# Visit http://localhost:3000/index-v2.html
+# Visit http://localhost:3000
 ```
 
 ---
 
 ## 📧 Email Configuration
 
-The server needs SMTP credentials to send automated emails. Edit the `.env` file:
+The server uses SendGrid Web API for reliable email delivery.
 
-### Option 1: Gmail (Simple)
+### Step 1: Sign Up for SendGrid
+
+1. Go to [SendGrid Signup](https://signup.sendgrid.com/)
+2. Free tier: 100 emails/day forever (no credit card)
+3. Verify your email address
+
+### Step 2: Create API Key
+
+1. Go to [API Keys](https://app.sendgrid.com/settings/api_keys)
+2. Click "Create API Key"
+3. Name: "Dead Mans Trigger"
+4. Permission: Full Access
+5. Copy the API key
+
+### Step 3: Authenticate Your Domain (CRITICAL)
+
+**Why?** Without domain authentication, Gmail/Outlook may silently drop your emails.
+
+1. Go to [Sender Authentication](https://app.sendgrid.com/settings/sender_auth)
+2. Click "Authenticate Your Domain"
+3. Enter your domain (e.g., `yourdomain.com`)
+4. Add the DNS records to your domain provider (Cloudflare, GoDaddy, etc.)
+5. Click "Verify" in SendGrid
+
+### Step 4: Configure .env File
 
 ```env
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_SECURE=false
-EMAIL_USER=your-email@gmail.com
-EMAIL_PASS=your-app-password-here
+SENDGRID_API_KEY=SG.your-api-key-here
+SENDER_EMAIL=alerts@yourdomain.com
+SENDER_NAME=Dead Mans Trigger
+REPLY_TO_EMAIL=your-personal-email@example.com
 ```
 
-**Important:** Gmail requires an [App Password](https://myaccount.google.com/apppasswords), not your regular password.
-
-### Option 2: SendGrid (Recommended for production)
-
-```env
-EMAIL_HOST=smtp.sendgrid.net
-EMAIL_PORT=587
-EMAIL_SECURE=false
-EMAIL_USER=apikey
-EMAIL_PASS=SG.your-api-key-here
-```
-
-Free tier: 100 emails/day forever. [Sign up here](https://signup.sendgrid.com/)
-
-See `.env.example` for more email service options (Brevo, Mailgun, Outlook, etc.)
+**Important:**
+- `SENDER_EMAIL` must use your authenticated domain
+- `REPLY_TO_EMAIL` is where recipients' replies go (can be any email)
 
 ---
 
 ## 📖 How to Use
 
-1. **Setup Trigger**
-   - Open http://localhost:3000/index-v2.html
-   - Click "SETUP TRIGGER"
-   - Set timer duration (e.g., 24 hours = check in daily)
-   - Add email recipients
-   - Write your secret message
-   - Optional: Upload file, add URLs to open
-   - Click "ARM TRIGGER"
+### 1. Setup Trigger
 
-2. **Check In Regularly**
-   - Click "CHECK-IN / RESET" before timer expires
-   - Proves you're alive and resets countdown
-   - Can close browser - server keeps running!
+- Open http://localhost:3000
+- Click "SETUP TRIGGER"
+- Set timer duration (e.g., 24 hours = check in daily)
+- Add email recipients (comma-separated)
+- Write your secret message
+- Optional: Upload file, add URLs
+- Click "ARM TRIGGER"
 
-3. **What Happens When Triggered**
-   - Server automatically sends emails to all recipients
-   - Includes your secret message
-   - Attaches any uploaded files
-   - Opens configured URLs (if browser is open)
+### 2. Check In Regularly
+
+- Click "CHECK-IN / RESET" before timer expires
+- Proves you're alive and resets countdown
+- Can close browser - server keeps running!
+
+### 3. What Happens When Triggered
+
+- Server automatically sends emails to all recipients
+- Includes your secret message
+- Attaches any uploaded files
+- Privacy-focused success page shows delivery stats (not sensitive data)
 
 ---
 
@@ -122,19 +144,19 @@ Test with a 1-minute trigger:
 
 ```
 Duration: 0.0167 hours (1 minute)
-Recipient: your-email@example.com
+Recipients: your-email@example.com
 Message: "This is a test"
 ```
 
-Wait 1 minute → Check your email!
+Wait 1 minute → Check your email inbox!
 
 ---
 
 ## 🛠️ Technical Details
 
 - **Backend:** Node.js + Express
-- **Database:** SQLite (better-sqlite3)
-- **Email:** Nodemailer (SMTP)
+- **Database:** SQLite
+- **Email:** SendGrid Web API (@sendgrid/mail)
 - **Scheduler:** node-cron (checks every 10 seconds)
 - **Frontend:** Vanilla HTML/CSS/JavaScript
 
@@ -145,12 +167,12 @@ No frameworks, no build step - just simple reliable tech.
 ## 📁 Project Structure
 
 ```
-dead-mans-trigger/
-├── server.js              # Main server
-├── index-v2.html          # Web interface
-├── package.json           # Dependencies
+DEAD-MANS-TRIGGER/
+├── server.js             # Main server
+├── index.html            # Web interface
+├── package.json          # Dependencies
 ├── .env.example          # Email config template
-├── SETUP-V2.md           # Detailed setup guide
+├── COMMIT-RULES.md       # Git commit policy
 ├── .gitignore            # Protects sensitive files
 └── deadman.db            # Database (auto-created)
 ```
@@ -161,23 +183,34 @@ dead-mans-trigger/
 
 For 24/7 operation, deploy to cloud:
 
+**Recommended Platforms:**
+- **Render** - Free tier, easy setup
+- **Railway** - Simple deployment
 - **Heroku** - Free tier available
-- **Railway** - Easy deployment
-- **Render** - Free tier
 - **DigitalOcean** - VPS option
 
-See [SETUP-V2.md](SETUP-V2.md) for deployment instructions.
+**Important:** Most cloud hosts block SMTP ports. This is why we use SendGrid Web API (HTTPS port 443) instead of SMTP.
+
+### Quick Deploy to Render
+
+1. Push code to GitHub
+2. Sign up at [Render.com](https://render.com/)
+3. New Web Service → Connect your repo
+4. Add environment variable: `SENDGRID_API_KEY`
+5. Deploy!
 
 ---
 
 ## ⚠️ Important Notes
 
 ### What This IS:
+
 - ✅ A functional dead man's switch for personal use
 - ✅ Great for education and understanding automation
 - ✅ Reliable for non-critical scenarios
 
 ### What This ISN'T:
+
 - ❌ Enterprise-grade security
 - ❌ Encrypted data storage
 - ❌ For life-critical situations
@@ -186,13 +219,33 @@ See [SETUP-V2.md](SETUP-V2.md) for deployment instructions.
 
 ---
 
-## 🔒 Security
+## 🔒 Security & Privacy
 
+**Data Protection:**
 - Email credentials stored in `.env` (gitignored)
 - Database stored locally (unencrypted)
 - Files stored as base64 (keep under 10MB)
 - Anyone with server access can view data
-- **Recommendation:** Add encryption for sensitive data
+
+**Privacy Features:**
+- Success page shows recipient COUNT, not addresses
+- Message LENGTH shown, not actual content
+- File TYPE/SIZE shown, not file contents
+
+**Recommendations:**
+- Keep `.env` file private
+- Don't commit `.env` to version control
+- Use strong passwords for server access
+- Consider encryption for sensitive data
+
+---
+
+## 🎯 Use Cases
+
+- Send important info to loved ones if you can't check in
+- Educational project for learning timers and automation
+- Backup system for critical information
+- Reminder system with consequences
 
 ---
 
@@ -204,8 +257,11 @@ MIT License - Use however you want!
 
 ## 🤝 Contributing
 
-Pull requests welcome! Ideas for improvements:
+Pull requests welcome!
 
+**Before contributing, read `COMMIT-RULES.md` for commit guidelines.**
+
+Ideas for improvements:
 - End-to-end encryption
 - SMS notifications (Twilio)
 - Web dashboard for multiple triggers
@@ -216,17 +272,27 @@ Pull requests welcome! Ideas for improvements:
 
 ## 📚 Documentation
 
-- **[SETUP-V2.md](SETUP-V2.md)** - Complete setup guide
-- **[.env.example](.env.example)** - Email configuration options
+- **[.env.example](.env.example)** - SendGrid configuration guide
+- **[COMMIT-RULES.md](COMMIT-RULES.md)** - Git commit policy
 
 ---
 
-## 🎯 Use Cases
+## 🐛 Troubleshooting
 
-- Send important info to loved ones if you can't check in
-- Educational project for learning timers and automation
-- Backup system for critical information
-- Reminder system with consequences
+**Emails not arriving?**
+1. Check SendGrid API key is correct
+2. Verify domain authentication is complete
+3. Check SendGrid Activity Feed for delivery status
+4. Make sure `SENDER_EMAIL` uses authenticated domain
+
+**Server won't start?**
+1. Run `npm install` to install dependencies
+2. Check `.env` file exists and has `SENDGRID_API_KEY`
+3. Make sure port 3000 is available
+
+**Database errors?**
+1. Delete `deadman.db` file
+2. Restart server (will recreate database)
 
 ---
 
@@ -240,5 +306,5 @@ Pull requests welcome! Ideas for improvements:
 
 - [GitHub Repository](https://github.com/Ringmast4r/DEAD-MANS-TRIGGER)
 - [Report Issues](https://github.com/Ringmast4r/DEAD-MANS-TRIGGER/issues)
-- [Email Setup Guide](SETUP-V2.md#step-2-configure-email)
-- [Deployment Guide](SETUP-V2.md#advanced-running-server-247)
+- [SendGrid Signup](https://signup.sendgrid.com/)
+- [Domain Authentication Guide](https://app.sendgrid.com/settings/sender_auth)

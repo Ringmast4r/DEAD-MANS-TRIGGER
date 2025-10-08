@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const sqlite3 = require('sqlite3').verbose();
 const cron = require('node-cron');
-const nodemailer = require('nodemailer');
+const sgMail = require('@sendgrid/mail');
 require('dotenv').config();
 
 const app = express();
@@ -45,28 +45,13 @@ db.run(`
   }
 });
 
-// Email transporter setup
-let transporter = null;
-
-function initEmailTransporter() {
-  if (process.env.EMAIL_HOST && process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-    transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port: parseInt(process.env.EMAIL_PORT) || 587,
-      secure: process.env.EMAIL_SECURE === 'true',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-    console.log('✓ Email transporter initialized');
-  } else {
-    console.log('⚠ Email not configured - emails will be skipped');
-    console.log('  Set EMAIL_HOST, EMAIL_USER, EMAIL_PASS in .env file');
-  }
+// SendGrid setup
+if (process.env.SENDGRID_API_KEY) {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  console.log('✓ SendGrid initialized');
+} else {
+  console.log('⚠ SendGrid not configured - set SENDGRID_API_KEY in environment');
 }
-
-initEmailTransporter();
 
 // Helper: Get active trigger
 function getActiveTrigger(callback) {
@@ -75,8 +60,8 @@ function getActiveTrigger(callback) {
 
 // Helper: Send trigger emails
 async function sendTriggerEmails(trigger) {
-  if (!transporter || !trigger.email_recipients) {
-    return { success: false, reason: 'No email config or recipients' };
+  if (!process.env.SENDGRID_API_KEY || !trigger.email_recipients) {
+    return { success: false, reason: 'No SendGrid API key or recipients' };
   }
 
   const recipients = trigger.email_recipients.split(',').map(e => e.trim()).filter(e => e);
@@ -105,9 +90,13 @@ This message was sent automatically by the Dead Man's Trigger system.
 
   for (const recipient of recipients) {
     try {
-      const mailOptions = {
-        from: process.env.EMAIL_USER,
+      const msg = {
         to: recipient,
+        from: {
+          email: process.env.SENDER_EMAIL || 'noreply@yourdomain.com',
+          name: process.env.SENDER_NAME || 'Dead Mans Trigger'
+        },
+        replyTo: process.env.REPLY_TO_EMAIL || process.env.SENDER_EMAIL,
         subject: '🚨 Dead Man\'s Trigger Activated',
         text: emailBody,
       };
@@ -115,14 +104,15 @@ This message was sent automatically by the Dead Man's Trigger system.
       // If there's an uploaded file, attach it
       if (trigger.uploaded_file_name && trigger.uploaded_file_data) {
         const base64Data = trigger.uploaded_file_data.split(',')[1];
-        mailOptions.attachments = [{
+        msg.attachments = [{
           filename: trigger.uploaded_file_name,
           content: base64Data,
-          encoding: 'base64'
+          type: 'application/octet-stream',
+          disposition: 'attachment'
         }];
       }
 
-      await transporter.sendMail(mailOptions);
+      await sgMail.send(msg);
       results.push({ recipient, success: true });
       console.log(`✓ Email sent to ${recipient}`);
     } catch (error) {
@@ -137,13 +127,22 @@ This message was sent automatically by the Dead Man's Trigger system.
 // Helper: Trigger expiry actions
 async function triggerExpiry(trigger) {
   console.log('🚨 TRIGGER EXPIRED - Executing actions...');
+  console.log('Trigger data:', {
+    id: trigger.id,
+    recipients: trigger.email_recipients,
+    message: trigger.secret_message?.substring(0, 50)
+  });
 
   const actions = [];
 
   // Send emails
   if (trigger.email_recipients) {
+    console.log('Attempting to send emails to:', trigger.email_recipients);
     const emailResult = await sendTriggerEmails(trigger);
+    console.log('Email result:', emailResult);
     actions.push({ type: 'email', ...emailResult });
+  } else {
+    console.log('⚠ No email recipients configured');
   }
 
   // Log other actions (URLs, files - these will be handled by frontend)
@@ -336,7 +335,7 @@ app.listen(PORT, () => {
 
 Server: http://localhost:${PORT}
 Database: deadman.db
-Email: ${transporter ? 'Configured ✓' : 'Not configured ⚠'}
+Email: ${process.env.SENDGRID_API_KEY ? 'SendGrid ✓' : 'Not configured ⚠'}
 
 Endpoints:
   GET  /api/status     - Get trigger status
