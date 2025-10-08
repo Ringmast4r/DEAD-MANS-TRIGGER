@@ -6,6 +6,51 @@ Unlike browser-only solutions, this actually works when you're incapacitated bec
 
 ---
 
+## 🚨 CRITICAL SECURITY WARNING
+
+**⚠️ THIS IS AN EDUCATIONAL DEMONSTRATION PROJECT ⚠️**
+
+**DO NOT deploy this code to production without implementing security measures first.**
+
+### 🔴 Known Security Issues (By Design for Learning):
+
+1. **No Authentication** - Anyone can access all API endpoints
+2. **Data Exposure** - `/api/status` returns all trigger data publicly
+3. **Open CORS** - Any website can make requests to the API
+4. **No Rate Limiting** - Vulnerable to spam and abuse
+5. **Unencrypted Database** - Secret messages stored in plaintext
+6. **No Input Validation** - Accepts any data without sanitization
+
+### ✅ Before Production Deployment, You MUST:
+
+- [ ] Add authentication (API keys, login system, or IP whitelist)
+- [ ] Sanitize `/api/status` to remove sensitive data from response
+- [ ] Implement rate limiting to prevent abuse
+- [ ] Restrict CORS to your domain only
+- [ ] Add input validation and sanitization
+- [ ] Encrypt sensitive database fields
+- [ ] Add HTTPS enforcement
+- [ ] Set up monitoring and logging
+- [ ] Review the SECURITY-EVALUATION.md (if available)
+
+### 📚 This Project Is For:
+
+- ✅ Learning server-side timers and automation
+- ✅ Understanding dead man's switch concepts
+- ✅ Educational purposes and experimentation
+- ✅ Local development and testing
+
+### ❌ This Project Should NOT Be Used For:
+
+- ❌ Production deployments (without security hardening)
+- ❌ Storing truly sensitive information
+- ❌ Life-critical situations
+- ❌ Public-facing services (without authentication)
+
+**For production use cases, consider professional services like Google Inactive Account Manager or implement the security measures listed above.**
+
+---
+
 ## 🚨 IMPORTANT: Read Before Contributing
 
 **ALL commits must be authored by ringmast4r only.**
