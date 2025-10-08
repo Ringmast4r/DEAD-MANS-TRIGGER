@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DEAD MAN'S TRIGGER</title>
+    <title>Dead Man's Trigger - DEMO (UI Preview Only)</title>
     <style>
         * {
             margin: 0;
@@ -23,10 +23,31 @@
             padding: 20px;
         }
 
+        .demo-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #ff9900;
+            color: #000;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .demo-banner a {
+            color: #000;
+            text-decoration: underline;
+            font-weight: bold;
+        }
+
         .container {
             text-align: center;
             max-width: 800px;
             width: 100%;
+            margin-top: 80px;
         }
 
         h1 {
@@ -112,6 +133,17 @@
             background: #880000;
         }
 
+        .btn.deploy {
+            background: #00ff00;
+            color: #000;
+            font-size: 1.5em;
+            padding: 20px 50px;
+        }
+
+        .btn.deploy:hover {
+            background: #00cc00;
+        }
+
         .config {
             margin: 30px 0;
             padding: 30px;
@@ -165,399 +197,134 @@
             color: #ff6666;
         }
 
-        .expired {
-            font-size: 4em;
-            color: #ff0000;
-            animation: flashRed 0.3s infinite;
+        .info-box {
+            background: rgba(0, 100, 255, 0.2);
+            border: 2px solid #0066ff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            color: #66aaff;
+        }
+
+        .info-box h3 {
+            color: #00ffff;
+            margin-bottom: 10px;
+        }
+
+        .info-box a {
+            color: #00ffff;
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
+    <div class="demo-banner">
+        ⚠️ THIS IS A DEMO - UI PREVIEW ONLY | This doesn't actually work on GitHub Pages!
+        <a href="https://github.com/Ringmast4r/DEAD-MANS-TRIGGER#-quick-start">→ See Deployment Guide</a>
+    </div>
+
     <div class="container">
         <h1>⚠ DEAD MAN'S TRIGGER ⚠</h1>
-        <div class="warning" id="warningText">CONFIGURE TRIGGER TO BEGIN</div>
+        <div class="warning" id="warningText">UI DEMO - NOT FUNCTIONAL</div>
 
-        <div id="countdown" class="countdown">NOT ARMED</div>
+        <div id="countdown" class="countdown">DEMO MODE</div>
 
-        <div id="activeControls" style="display: none;">
-            <div style="margin: 20px 0; color: #ff6666; font-size: 1.1em;">
-                ⚠ Click CHECK-IN to prove you're alive and reset the timer.<br>
-                If timer reaches zero, all information will be released automatically.
-            </div>
-            <div class="controls">
-                <button class="btn" onclick="resetTimer()" style="font-size: 2em; padding: 20px 60px;">CHECK-IN / RESET</button>
-                <button class="btn secondary" onclick="disarmTrigger()">DISARM & EDIT</button>
-            </div>
+        <div class="info-box">
+            <h3>📢 This is a UI Preview Only</h3>
+            <p><strong>Why doesn't this work?</strong> GitHub Pages only hosts static HTML files. The real Dead Man's Trigger needs a Node.js server running 24/7 to check timers and send automated emails.</p>
+            <br>
+            <p><strong>To deploy the real working version:</strong></p>
+            <ol style="text-align: left; margin-left: 20px; line-height: 1.8;">
+                <li>Clone the repo: <a href="https://github.com/Ringmast4r/DEAD-MANS-TRIGGER">github.com/Ringmast4r/DEAD-MANS-TRIGGER</a></li>
+                <li>Follow the setup guide in README.md</li>
+                <li>Deploy to Railway, Render, or your own server</li>
+                <li>Configure your email credentials</li>
+                <li>It will then work 24/7 with automatic email sending!</li>
+            </ol>
         </div>
 
         <div id="setupControls" class="controls">
-            <button class="btn" onclick="toggleConfig()">SETUP TRIGGER</button>
+            <button class="btn" onclick="toggleConfig()">VIEW DEMO INTERFACE</button>
+            <br><br>
+            <a href="https://github.com/Ringmast4r/DEAD-MANS-TRIGGER" style="text-decoration: none;">
+                <button class="btn deploy">DEPLOY YOUR OWN →</button>
+            </a>
         </div>
 
         <div id="config" class="config" style="display: none;">
+            <div class="info-box">
+                <p>👇 This interface shows what the real app looks like. But it won't actually work here since there's no server!</p>
+            </div>
+
             <div class="config-item">
                 <label>⏱ Timer Duration (hours)</label>
-                <input type="number" id="duration" value="24" min="0.01" max="168" step="0.01">
+                <input type="number" id="duration" value="24" min="0.01" max="168" step="0.01" disabled>
                 <div style="font-size: 0.85em; color: #ff9999; margin-top: 5px;">
-                    How often you need to check in (e.g., 24 = check in every day)
+                    (This is just a demo - inputs are disabled)
                 </div>
             </div>
 
             <div class="config-item">
-                <label>📧 Email Recipients (optional)</label>
-                <input type="text" id="emailRecipients" placeholder="person1@example.com, person2@example.com">
-                <div style="font-size: 0.85em; color: #ff9999; margin-top: 5px;">
-                    Opens pre-filled emails when triggered - you just click send
-                </div>
+                <label>📧 Email Recipients</label>
+                <input type="text" id="emailRecipients" placeholder="person1@example.com, person2@example.com" disabled>
             </div>
 
             <div class="config-item">
-                <label>📄 Secret Message (will be revealed/sent when triggered)</label>
-                <textarea id="secretMessage" placeholder="Enter confidential information, passwords, instructions, etc..."></textarea>
+                <label>📄 Secret Message</label>
+                <textarea id="secretMessage" placeholder="Your confidential information..." disabled></textarea>
             </div>
 
             <div class="config-item">
-                <label>📎 Upload File to Release (stored locally in browser)</label>
-                <input type="file" id="fileUpload" onchange="handleFileUpload(event)">
-                <div id="fileInfo" style="margin-top: 10px; color: #ff6666;"></div>
+                <label>📎 Upload File</label>
+                <input type="file" id="fileUpload" disabled>
             </div>
 
             <div class="config-item">
-                <label>🔗 Additional URLs to open (one per line)</label>
-                <textarea id="triggerUrls" placeholder="https://example.com/document1&#10;https://example.com/document2"></textarea>
+                <label>🔗 URLs to Open</label>
+                <textarea id="triggerUrls" placeholder="https://example.com" disabled></textarea>
             </div>
 
             <div class="status">
-                <strong>STATUS:</strong> <span id="status">Not Armed</span><br>
-                <strong>LAST RESET:</strong> <span id="lastReset">Never</span><br>
-                <strong>EXPIRES:</strong> <span id="expiryTime">Not Set</span><br>
-                <strong>FILES:</strong> <span id="fileStatus">None</span>
+                <strong>STATUS:</strong> Demo Mode - Not Connected to Server<br>
+                <strong>TO USE:</strong> Deploy your own instance from GitHub<br>
+                <strong>LINK:</strong> <a href="https://github.com/Ringmast4r/DEAD-MANS-TRIGGER" style="color: #ff6666;">github.com/Ringmast4r/DEAD-MANS-TRIGGER</a>
             </div>
 
-            <button class="btn" onclick="saveConfig()" style="font-size: 1.5em; padding: 20px 50px;">ARM TRIGGER</button>
+            <button class="btn" onclick="showDeployInfo()" style="font-size: 1.5em; padding: 20px 50px;">DEPLOY REAL VERSION</button>
         </div>
     </div>
 
     <script>
-        let countdownInterval;
-        let expiryTimestamp;
-        let uploadedFile = null;
-        let isArmed = false;
-
-        // Handle file upload
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                uploadedFile = {
-                    name: file.name,
-                    type: file.type,
-                    data: e.target.result
-                };
-                document.getElementById('fileInfo').textContent = `✓ ${file.name} (${(file.size / 1024).toFixed(2)} KB) loaded`;
-            };
-            reader.readAsDataURL(file);
-        }
-
-        // Update UI based on armed state
-        function updateUI() {
-            if (isArmed) {
-                document.getElementById('setupControls').style.display = 'none';
-                document.getElementById('activeControls').style.display = 'block';
-                document.getElementById('config').style.display = 'none';
-                document.getElementById('warningText').textContent = 'SYSTEM ARMED • AWAITING CHECK-IN';
-            } else {
-                document.getElementById('setupControls').style.display = 'block';
-                document.getElementById('activeControls').style.display = 'none';
-                document.getElementById('warningText').textContent = 'CONFIGURE TRIGGER TO BEGIN';
-                document.getElementById('countdown').textContent = 'NOT ARMED';
-            }
-        }
-
-        // Disarm trigger
-        function disarmTrigger() {
-            if (confirm('Are you sure you want to DISARM the trigger?\n\nThis will stop the countdown and allow you to edit settings.')) {
-                isArmed = false;
-                if (countdownInterval) {
-                    clearInterval(countdownInterval);
-                }
-
-                const saved = localStorage.getItem('deadManTrigger');
-                if (saved) {
-                    const config = JSON.parse(saved);
-                    config.isArmed = false;
-                    localStorage.setItem('deadManTrigger', JSON.stringify(config));
-                }
-
-                updateUI();
-                toggleConfig();
-            }
-        }
-
-        // Load saved configuration
-        function loadConfig() {
-            const saved = localStorage.getItem('deadManTrigger');
-            if (saved) {
-                const config = JSON.parse(saved);
-                expiryTimestamp = config.expiryTimestamp;
-                isArmed = config.isArmed || false;
-
-                document.getElementById('duration').value = config.duration || 24;
-                document.getElementById('emailRecipients').value = config.emailRecipients || '';
-                document.getElementById('secretMessage').value = config.secretMessage || '';
-                document.getElementById('triggerUrls').value = config.triggerUrls || '';
-
-                if (config.uploadedFile) {
-                    uploadedFile = config.uploadedFile;
-                    document.getElementById('fileInfo').textContent = `✓ ${uploadedFile.name} ready`;
-                }
-
-                updateStatus();
-                updateUI();
-            }
-        }
-
-        // Save configuration
-        function saveConfig() {
-            const duration = parseFloat(document.getElementById('duration').value);
-            const emailRecipients = document.getElementById('emailRecipients').value.trim();
-            const secretMessage = document.getElementById('secretMessage').value.trim();
-            const triggerUrls = document.getElementById('triggerUrls').value.trim();
-
-            // Validate at least one action is configured
-            if (!emailRecipients && !secretMessage && !uploadedFile && !triggerUrls) {
-                alert('⚠ Please configure at least one action:\n\n• Email recipients\n• Secret message\n• File upload\n• URLs to open');
-                return;
-            }
-
-            const now = Date.now();
-            expiryTimestamp = now + (duration * 60 * 60 * 1000);
-            isArmed = true;
-
-            const config = {
-                duration,
-                emailRecipients,
-                secretMessage,
-                triggerUrls,
-                uploadedFile,
-                expiryTimestamp,
-                lastReset: now,
-                isArmed: true
-            };
-
-            try {
-                localStorage.setItem('deadManTrigger', JSON.stringify(config));
-            } catch (e) {
-                if (e.name === 'QuotaExceededError') {
-                    alert('⚠ ERROR: File too large!\n\nYour uploaded file exceeds browser storage limits.\nPlease upload a smaller file (<2MB).');
-                    return;
-                }
-            }
-
-            updateStatus();
-            updateUI();
-            startCountdown();
-
-            let actions = [];
-            if (emailRecipients) actions.push('• Open pre-filled emails to: ' + emailRecipients);
-            if (secretMessage) actions.push('• AUTO-DOWNLOAD secret message');
-            if (uploadedFile) actions.push('• AUTO-DOWNLOAD file: ' + uploadedFile.name);
-            if (triggerUrls) actions.push('• AUTO-OPEN ' + triggerUrls.split('\n').filter(u => u.trim()).length + ' URL(s)');
-
-            alert('🚨 TRIGGER ARMED 🚨\n\nTimer: ' + duration + ' hours\n\nIf you don\'t check in, this will:\n' + actions.join('\n') + '\n\n✓ Everything happens automatically!\n\nKeep clicking CHECK-IN to stay alive!');
-        }
-
-        // Reset timer (Check-in)
-        function resetTimer() {
-            if (!isArmed || !expiryTimestamp) {
-                alert('Trigger is not armed!');
-                return;
-            }
-
-            const saved = localStorage.getItem('deadManTrigger');
-            if (saved) {
-                const config = JSON.parse(saved);
-                const duration = config.duration || 24;
-                const now = Date.now();
-
-                expiryTimestamp = now + (duration * 60 * 60 * 1000);
-                config.expiryTimestamp = expiryTimestamp;
-                config.lastReset = now;
-
-                localStorage.setItem('deadManTrigger', JSON.stringify(config));
-                updateStatus();
-                startCountdown();
-
-                const nextCheckIn = new Date(expiryTimestamp).toLocaleString();
-                alert('✓ CHECK-IN SUCCESSFUL\n\nYou\'re alive! Timer reset.\n\nNext check-in required before:\n' + nextCheckIn);
-            }
-        }
-
-        // Toggle configuration panel
         function toggleConfig() {
             const config = document.getElementById('config');
             config.style.display = config.style.display === 'none' ? 'block' : 'none';
         }
 
-        // Update status display
-        function updateStatus() {
-            const saved = localStorage.getItem('deadManTrigger');
-            if (saved) {
-                const config = JSON.parse(saved);
-                const lastReset = new Date(config.lastReset).toLocaleString();
-                const expiry = new Date(config.expiryTimestamp).toLocaleString();
+        function showDeployInfo() {
+            alert('🚀 TO DEPLOY THE REAL WORKING VERSION:\n\n' +
+                  '1. Go to: github.com/Ringmast4r/DEAD-MANS-TRIGGER\n' +
+                  '2. Follow the setup instructions in README.md\n' +
+                  '3. Deploy to Railway (free) or any Node.js hosting\n' +
+                  '4. Configure your email credentials\n' +
+                  '5. You\'ll have a working dead man\'s switch!\n\n' +
+                  'This GitHub Pages demo is just a UI preview.');
 
-                document.getElementById('status').textContent = 'ARMED';
-                document.getElementById('lastReset').textContent = lastReset;
-                document.getElementById('expiryTime').textContent = expiry;
-                document.getElementById('fileStatus').textContent = config.uploadedFile ? config.uploadedFile.name : 'None';
-            }
+            window.open('https://github.com/Ringmast4r/DEAD-MANS-TRIGGER#-quick-start', '_blank');
         }
 
-        // Start countdown
-        function startCountdown() {
-            if (countdownInterval) {
-                clearInterval(countdownInterval);
-            }
+        // Demo countdown animation
+        let demoTime = 3600;
+        setInterval(() => {
+            demoTime--;
+            if (demoTime <= 0) demoTime = 3600;
 
-            countdownInterval = setInterval(() => {
-                const now = Date.now();
-                const remaining = expiryTimestamp - now;
+            const hours = Math.floor(demoTime / 3600);
+            const minutes = Math.floor((demoTime % 3600) / 60);
+            const seconds = demoTime % 60;
 
-                if (remaining <= 0) {
-                    triggerExpiry();
-                    return;
-                }
-
-                const hours = Math.floor(remaining / (1000 * 60 * 60));
-                const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
-
-                const display = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-                document.getElementById('countdown').textContent = display;
-
-                // Flash when under 1 hour
-                if (remaining < 60 * 60 * 1000) {
-                    document.getElementById('countdown').classList.add('critical');
-                } else {
-                    document.getElementById('countdown').classList.remove('critical');
-                }
-            }, 100);
-        }
-
-        // Download file from base64
-        function downloadFile(filename, dataUrl) {
-            const link = document.createElement('a');
-            link.href = dataUrl;
-            link.download = filename;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        // Download text as file
-        function downloadTextFile(filename, text) {
-            const blob = new Blob([text], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = filename;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-        }
-
-        // Trigger expiry
-        function triggerExpiry() {
-            clearInterval(countdownInterval);
-            document.getElementById('countdown').innerHTML = '<div class="expired">TRIGGERED!</div>';
-
-            const saved = localStorage.getItem('deadManTrigger');
-            if (saved) {
-                const config = JSON.parse(saved);
-
-                // Play alert sound
-                const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUKXh8LhjHAU2jdXzzn0vBSN1xe/glEILElyx6OyrWBUIQ5zd8sFuJAUuhM/z3I4+CRZnvO7mnFINCk6j4O+3ZhwENo7W8897LwUiccPu45ZFCxFYr+frrVsXCEGZ3PLEcSYGLIHO8tmJNgg');
-                audio.play().catch(() => {});
-
-                alert('🚨 DEAD MAN\'S TRIGGER ACTIVATED! 🚨\n\nReleasing information now...');
-
-                // 1. Download uploaded file if exists
-                if (config.uploadedFile) {
-                    setTimeout(() => {
-                        downloadFile(config.uploadedFile.name, config.uploadedFile.data);
-                    }, 500);
-                }
-
-                // 2. Download secret message as text file
-                if (config.secretMessage) {
-                    setTimeout(() => {
-                        downloadTextFile('DEAD_MANS_TRIGGER_SECRET_MESSAGE.txt', config.secretMessage);
-                    }, 1000);
-                }
-
-                // 3. Open pre-filled emails for recipients
-                if (config.emailRecipients) {
-                    const recipients = config.emailRecipients.split(',').map(e => e.trim()).filter(e => e);
-
-                    const emailBody =
-                        '🚨 DEAD MAN\'S TRIGGER HAS BEEN ACTIVATED 🚨\n\n' +
-                        'This is an automated message. The dead man\'s trigger has been activated because the required check-in did not occur.\n\n' +
-                        '═══════════════════════════════════════\n' +
-                        'SECRET MESSAGE:\n' +
-                        '═══════════════════════════════════════\n\n' +
-                        (config.secretMessage || 'No message provided') +
-                        '\n\n═══════════════════════════════════════\n' +
-                        'Timestamp: ' + new Date().toLocaleString() + '\n' +
-                        '═══════════════════════════════════════\n\n' +
-                        'This message was sent automatically by the Dead Man\'s Trigger system.';
-
-                    const subject = 'Dead Man\'s Trigger Activated';
-
-                    // Open mailto for each recipient (pre-filled, user clicks send)
-                    recipients.forEach((email, index) => {
-                        setTimeout(() => {
-                            const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
-                            window.location.href = mailtoLink;
-                        }, 1500 + (index * 2000));
-                    });
-                }
-
-                // 4. Open trigger URLs
-                if (config.triggerUrls) {
-                    const urls = config.triggerUrls.split('\n').map(u => u.trim()).filter(u => u);
-                    urls.forEach((url, index) => {
-                        setTimeout(() => {
-                            window.open(url, '_blank');
-                        }, 2500 + (index * 500));
-                    });
-                }
-
-                // Show summary
-                setTimeout(() => {
-                    let summary = '✓ INFORMATION RELEASED:\n\n';
-                    if (config.uploadedFile) summary += '• File downloaded: ' + config.uploadedFile.name + '\n';
-                    if (config.secretMessage) summary += '• Secret message downloaded\n';
-                    if (config.emailRecipients) summary += '• Emails opened for: ' + config.emailRecipients + '\n';
-                    if (config.triggerUrls) summary += '• URLs opened: ' + config.triggerUrls.split('\n').length + '\n';
-
-                    alert(summary);
-                }, 3000);
-            }
-        }
-
-        // Initialize on load
-        window.onload = () => {
-            loadConfig();
-            if (isArmed && expiryTimestamp) {
-                startCountdown();
-            } else {
-                updateUI();
-            }
-        };
+            document.getElementById('countdown').textContent =
+                `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }, 1000);
     </script>
 </body>
 </html>

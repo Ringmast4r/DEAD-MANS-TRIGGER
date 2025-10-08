@@ -8,6 +8,18 @@ Unlike browser-only solutions, this actually works when you're incapacitated bec
 
 ---
 
+## 📸 Screenshots
+
+**Main Interface - Setup Screen**
+
+![Dead Man's Trigger - Main Interface](deadman.png)
+
+**Armed & Counting Down**
+
+![Dead Man's Trigger - Activated](activated.png)
+
+---
+
 ## ✨ Features
 
 - ✅ **Server-side countdown** - Runs 24/7, even when your browser is closed
