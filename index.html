@@ -313,15 +313,25 @@
 
         // Update UI based on armed state
         function updateUI() {
+            const countdown = document.getElementById('countdown');
+
             if (isArmed) {
                 document.getElementById('setupControls').style.display = 'none';
                 document.getElementById('activeControls').style.display = 'block';
                 document.getElementById('config').style.display = 'none';
                 document.getElementById('warningText').textContent = 'SYSTEM ARMED • AWAITING CHECK-IN';
+                // Make sure countdown is visible when armed
+                if (countdown) {
+                    countdown.style.display = 'block';
+                }
             } else {
                 document.getElementById('setupControls').style.display = 'block';
                 document.getElementById('activeControls').style.display = 'none';
                 document.getElementById('warningText').textContent = 'CONFIGURE TRIGGER TO BEGIN';
+                // Make sure countdown is visible when not armed
+                if (countdown) {
+                    countdown.style.display = 'block';
+                }
                 // Don't overwrite the NOT ARMED HTML message - let the default HTML show
             }
         }
