@@ -483,10 +483,14 @@
             const config = document.getElementById('config');
             const notArmedMsg = document.getElementById('notArmedMessage');
             const setupControls = document.getElementById('setupControls');
+            const countdown = document.getElementById('countdown');
 
             if (config.style.display === 'none') {
                 config.style.display = 'block';
-                // Hide NOT ARMED message and SETUP TRIGGER button when showing config
+                // Hide countdown box, NOT ARMED message, and SETUP TRIGGER button when showing config
+                if (countdown) {
+                    countdown.style.display = 'none';
+                }
                 if (notArmedMsg) {
                     notArmedMsg.style.display = 'none';
                 }
@@ -495,7 +499,10 @@
                 }
             } else {
                 config.style.display = 'none';
-                // Show NOT ARMED message and SETUP TRIGGER button when hiding config
+                // Show countdown box, NOT ARMED message, and SETUP TRIGGER button when hiding config
+                if (countdown) {
+                    countdown.style.display = 'block';
+                }
                 if (notArmedMsg) {
                     notArmedMsg.style.display = 'block';
                 }
