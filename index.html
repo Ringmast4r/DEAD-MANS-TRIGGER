@@ -35,6 +35,8 @@
             text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000;
             animation: pulse 2s infinite;
             letter-spacing: 5px;
+            text-align: center;
+            width: 100%;
         }
 
         @keyframes pulse {
@@ -213,6 +215,39 @@
             color: #4a9eff;
             margin-bottom: 20px;
             font-size: 1.8em;
+        }
+
+        /* Mobile responsive styles */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+                letter-spacing: 2px;
+            }
+
+            .warning {
+                font-size: 1em;
+                letter-spacing: 1px;
+            }
+
+            .countdown {
+                font-size: clamp(1.5em, 8vw, 4em);
+                padding: 15px;
+                margin: 20px 0;
+            }
+
+            .btn {
+                font-size: 1.1em;
+                padding: 12px 30px;
+                margin: 8px;
+            }
+
+            .config {
+                padding: 20px;
+            }
+
+            label {
+                font-size: 0.95em;
+            }
         }
 
     </style>
