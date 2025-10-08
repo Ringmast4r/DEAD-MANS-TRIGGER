@@ -222,7 +222,11 @@
         <h1>⚠ DEAD MAN'S TRIGGER ⚠</h1>
         <div class="warning" id="warningText">CONFIGURE TRIGGER TO BEGIN</div>
 
-        <div id="countdown" class="countdown">NOT ARMED</div>
+        <div id="countdown" class="countdown">
+            <div id="notArmedMessage">
+                NOT ARMED
+            </div>
+        </div>
 
         <div id="activeControls" style="display: none;">
             <div style="margin: 20px 0; color: #ff6666; font-size: 1.1em;">
@@ -318,7 +322,7 @@
                 document.getElementById('setupControls').style.display = 'block';
                 document.getElementById('activeControls').style.display = 'none';
                 document.getElementById('warningText').textContent = 'CONFIGURE TRIGGER TO BEGIN';
-                document.getElementById('countdown').textContent = 'NOT ARMED';
+                // Don't overwrite the NOT ARMED HTML message - let the default HTML show
             }
         }
 
@@ -422,19 +426,26 @@
                     expiryTimestamp = data.expiry_timestamp;
                     isArmed = true;
 
-                    updateUI();
-                    startCountdown();
-
                     let actions = [];
                     if (emailRecipients) actions.push('• AUTO-SEND emails to: ' + emailRecipients);
                     if (secretMessage) actions.push('• Include secret message in email');
                     if (uploadedFile) actions.push('• Attach file: ' + uploadedFile.name);
                     if (triggerUrls) actions.push('• AUTO-OPEN ' + triggerUrls.split('\n').filter(u => u.trim()).length + ' URL(s)');
 
-                    alert('🚨 TRIGGER ARMED 🚨\n\nTimer: ' + duration + ' hours\n\nIf you don\'t check in, the SERVER will:\n' + actions.join('\n') + '\n\n✓ EMAILS SENT AUTOMATICALLY!\n✓ No browser needed!\n✓ Works even if computer is off!\n\nKeep clicking CHECK-IN to stay alive!');
+                    const confirmed = confirm('🚨 TRIGGER ARMED 🚨\n\nTimer: ' + duration + ' hours\n\nIf you don\'t check in, the SERVER will:\n' + actions.join('\n') + '\n\n✓ EMAILS SENT AUTOMATICALLY!\n✓ No browser needed!\n✓ Works even if computer is off!\n\nKeep clicking CHECK-IN to extend time!\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nClick OK to CONFIRM and start countdown\nClick CANCEL to EDIT DETAILS');
 
-                    // Reload to sync with server
-                    await loadConfig();
+                    if (confirmed) {
+                        // User confirmed - proceed with arming
+                        updateUI();
+                        startCountdown();
+                        // Reload to sync with server
+                        await loadConfig();
+                    } else {
+                        // User wants to edit - disarm and stay on config page
+                        await fetch(`${API_URL}/disarm`, { method: 'POST' });
+                        isArmed = false;
+                        // Config page stays open for editing
+                    }
                 } else {
                     alert('Failed to arm trigger: ' + (data.error || 'Unknown error'));
                 }
@@ -470,7 +481,28 @@
         // Toggle configuration panel
         function toggleConfig() {
             const config = document.getElementById('config');
-            config.style.display = config.style.display === 'none' ? 'block' : 'none';
+            const notArmedMsg = document.getElementById('notArmedMessage');
+            const setupControls = document.getElementById('setupControls');
+
+            if (config.style.display === 'none') {
+                config.style.display = 'block';
+                // Hide NOT ARMED message and SETUP TRIGGER button when showing config
+                if (notArmedMsg) {
+                    notArmedMsg.style.display = 'none';
+                }
+                if (setupControls) {
+                    setupControls.style.display = 'none';
+                }
+            } else {
+                config.style.display = 'none';
+                // Show NOT ARMED message and SETUP TRIGGER button when hiding config
+                if (notArmedMsg) {
+                    notArmedMsg.style.display = 'block';
+                }
+                if (setupControls) {
+                    setupControls.style.display = 'block';
+                }
+            }
         }
 
         // Update status display
@@ -492,6 +524,12 @@
                 clearInterval(countdownInterval);
             }
 
+            // Clear the NOT ARMED message
+            const notArmedMsg = document.getElementById('notArmedMessage');
+            if (notArmedMsg) {
+                notArmedMsg.remove();
+            }
+
             countdownInterval = setInterval(async () => {
                 const now = Date.now();
                 const remaining = expiryTimestamp - now;
@@ -511,29 +549,34 @@
                     const fileInfo = hasFile ? getFileInfo(data.uploaded_file_name, data.uploaded_file_data) : null;
                     const sentTime = new Date().toLocaleString();
 
+                    console.log('Trigger expired - showing success page', { recipientCount, messageLength, hasFile });
+
                     // Switch to calm blue success state
                     document.body.classList.add('success');
-                    document.getElementById('countdown').innerHTML = `
-                        <div class="success-message">
-                            <h2>🚨 TRIGGER ACTIVATED</h2>
-                            <p style="margin-bottom: 30px;">You didn't check in on time. Your Dead Man's Trigger has been activated and your message was delivered.</p>
 
-                            <div style="background: rgba(74, 158, 255, 0.1); padding: 20px; border-radius: 8px; margin: 20px 0; text-align: left;">
-                                <h3 style="color: #4a9eff; margin-top: 0;">📧 WHAT WAS SENT:</h3>
-                                <p><strong>Recipients:</strong> ${recipientCount} email address${recipientCount !== 1 ? 'es' : ''}</p>
-                                <p><strong>Message:</strong> ${messageLength > 0 ? messageLength + ' characters' : 'None'}</p>
-                                <p><strong>File:</strong> ${hasFile ? fileInfo : 'None'}</p>
-                                <p><strong>Sent:</strong> ${sentTime}</p>
+                    // Force clear and replace countdown content
+                    const countdownEl = document.getElementById('countdown');
+                    countdownEl.innerHTML = `
+                        <div class="success-message" style="font-size: 1rem;">
+                            <h2 style="font-size: 1.8em;">🚨 TRIGGER ACTIVATED</h2>
+                            <p style="margin-bottom: 30px; font-size: 1em;">You didn't check in on time. Your Dead Man's Trigger has been activated and your message was delivered.</p>
+
+                            <div style="background: rgba(74, 158, 255, 0.1); padding: 20px; border-radius: 8px; margin: 20px 0; text-align: left; font-size: 0.95em;">
+                                <h3 style="color: #4a9eff; margin-top: 0; font-size: 1.2em;">📧 WHAT WAS SENT:</h3>
+                                <p style="font-size: 1em;"><strong>Recipients:</strong> ${recipientCount} email address${recipientCount !== 1 ? 'es' : ''}</p>
+                                <p style="font-size: 1em;"><strong>Message:</strong> ${messageLength > 0 ? messageLength + ' characters' : 'None'}</p>
+                                <p style="font-size: 1em;"><strong>File:</strong> ${hasFile ? fileInfo : 'None'}</p>
+                                <p style="font-size: 1em;"><strong>Sent:</strong> ${sentTime}</p>
                             </div>
 
-                            <p style="margin: 30px 0 20px 0;"><strong>Your trigger is now DISARMED.</strong></p>
+                            <p style="margin: 30px 0 20px 0; font-size: 1em;"><strong>Your trigger is now DISARMED.</strong></p>
 
                             <button onclick="resetTrigger()" style="
                                 background: linear-gradient(135deg, #4a9eff, #357abd);
                                 color: white;
                                 border: none;
                                 padding: 15px 40px;
-                                font-size: 1.2em;
+                                font-size: 1em;
                                 font-weight: bold;
                                 border-radius: 8px;
                                 cursor: pointer;
