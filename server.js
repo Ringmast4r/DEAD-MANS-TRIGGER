@@ -46,11 +46,14 @@ db.run(`
 });
 
 // SendGrid setup
+const DEMO_MODE = !process.env.SENDGRID_API_KEY;
 if (process.env.SENDGRID_API_KEY) {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-  console.log('✓ SendGrid initialized');
+  console.log('✓ SendGrid initialized - LIVE MODE');
 } else {
-  console.log('⚠ SendGrid not configured - set SENDGRID_API_KEY in environment');
+  console.log('⚠ DEMO MODE: No SENDGRID_API_KEY found');
+  console.log('  Emails will be logged to console instead of sent');
+  console.log('  Perfect for testing and learning!');
 }
 
 // Helper: Get active trigger
@@ -60,8 +63,8 @@ function getActiveTrigger(callback) {
 
 // Helper: Send trigger emails
 async function sendTriggerEmails(trigger) {
-  if (!process.env.SENDGRID_API_KEY || !trigger.email_recipients) {
-    return { success: false, reason: 'No SendGrid API key or recipients' };
+  if (!trigger.email_recipients) {
+    return { success: false, reason: 'No recipients configured' };
   }
 
   const recipients = trigger.email_recipients.split(',').map(e => e.trim()).filter(e => e);
@@ -87,6 +90,29 @@ ${trigger.trigger_urls ? `\nAdditional URLs:\n${trigger.trigger_urls}\n` : ''}
 
 This message was sent automatically by the Dead Man's Trigger system.
   `.trim();
+
+  // DEMO MODE: Log emails instead of sending
+  if (DEMO_MODE) {
+    console.log('\n═══════════════════════════════════════════════════════');
+    console.log('📧 DEMO MODE: Email would be sent to:');
+    console.log('═══════════════════════════════════════════════════════');
+    for (const recipient of recipients) {
+      console.log(`\n✉️  TO: ${recipient}`);
+      console.log(`📄 SUBJECT: 🚨 Dead Man's Trigger Activated`);
+      console.log(`📝 MESSAGE:\n${emailBody}`);
+      if (trigger.uploaded_file_name) {
+        console.log(`📎 ATTACHMENT: ${trigger.uploaded_file_name} (${trigger.uploaded_file_data ? (trigger.uploaded_file_data.length / 1024).toFixed(2) : '0'} KB)`);
+      }
+      results.push({ recipient, success: true, demo: true });
+    }
+    console.log('\n═══════════════════════════════════════════════════════\n');
+    return { success: true, results, demo: true };
+  }
+
+  // LIVE MODE: Actually send emails via SendGrid
+  if (!process.env.SENDGRID_API_KEY) {
+    return { success: false, reason: 'No SendGrid API key configured' };
+  }
 
   for (const recipient of recipients) {
     try {
@@ -328,6 +354,7 @@ app.post('/api/disarm', (req, res) => {
 
 // Start server
 app.listen(PORT, () => {
+  const mode = DEMO_MODE ? 'DEMO MODE (emails logged to console)' : 'LIVE MODE (emails sent via SendGrid)';
   console.log(`
 ╔═══════════════════════════════════════════════════════════════╗
 ║         DEAD MAN'S TRIGGER SERVER - RUNNING                  ║
@@ -335,9 +362,16 @@ app.listen(PORT, () => {
 
 Server: http://localhost:${PORT}
 Database: deadman.db
-Email: ${process.env.SENDGRID_API_KEY ? 'SendGrid ✓' : 'Not configured ⚠'}
+Mode: ${mode}
 
-Endpoints:
+${DEMO_MODE ? `
+🎮 DEMO MODE ACTIVE
+   → No SendGrid API key detected
+   → Emails will be LOGGED to console (not sent)
+   → Perfect for testing and learning!
+   → To enable real emails: Add SENDGRID_API_KEY to .env
+
+` : ''}Endpoints:
   GET  /api/status     - Get trigger status
   POST /api/configure  - Arm trigger
   POST /api/checkin    - Reset timer (check-in)

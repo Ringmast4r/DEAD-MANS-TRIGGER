@@ -6,6 +6,30 @@ Unlike browser-only solutions, this actually works when you're incapacitated bec
 
 ---
 
+## 🎮 Try the Demo First!
+
+### 🌐 [Live Visual Demo](https://ringmast4r.github.io/DEAD-MANS-TRIGGER/)
+
+**See what it looks like!** Visit the GitHub Pages demo for a visual preview (non-functional, just UI).
+
+### 💻 Run Locally in Demo Mode (Functional)
+
+**Want to see how it ACTUALLY works without setting up email?**
+
+```bash
+git clone https://github.com/Ringmast4r/DEAD-MANS-TRIGGER.git
+cd DEAD-MANS-TRIGGER
+npm install
+npm start
+```
+
+Visit `http://localhost:3000` - the server automatically runs in **DEMO MODE** when no SendGrid API key is found.
+The system logs what WOULD be sent to the console without actually sending emails. Perfect for learning and testing!
+
+**For full email functionality**, see [Email Configuration](#-email-configuration) below or read [DEMO-MODE.md](DEMO-MODE.md).
+
+---
+
 ## 🚨 CRITICAL SECURITY WARNING
 
 **⚠️ THIS IS AN EDUCATIONAL DEMONSTRATION PROJECT ⚠️**
@@ -317,6 +341,7 @@ Ideas for improvements:
 
 ## 📚 Documentation
 
+- **[DEMO-MODE.md](DEMO-MODE.md)** - Complete guide to running in demo mode without email
 - **[.env.example](.env.example)** - SendGrid configuration guide
 - **[COMMIT-RULES.md](COMMIT-RULES.md)** - Git commit policy
 

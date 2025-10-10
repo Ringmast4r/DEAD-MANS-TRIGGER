@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEAD MAN'S TRIGGER - Visual Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0000 100%);
+            color: #ff0000;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .demo-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 200, 0, 0.95);
+            color: #000;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            z-index: 1000;
+            border-bottom: 3px solid #ff0000;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 800px;
+            width: 100%;
+            margin-top: 70px;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000;
+            animation: pulse 2s infinite;
+            letter-spacing: 5px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .warning {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            color: #ff6666;
+            letter-spacing: 2px;
+        }
+
+        .countdown {
+            font-size: 6em;
+            font-weight: bold;
+            margin: 40px 0;
+            text-shadow: 0 0 30px #ff0000, 0 0 60px #ff0000;
+            padding: 20px;
+            background: rgba(255, 0, 0, 0.1);
+            border: 3px solid #ff0000;
+            border-radius: 10px;
+            box-shadow: 0 0 50px rgba(255, 0, 0, 0.5);
+        }
+
+        .btn {
+            font-family: 'Courier New', monospace;
+            font-size: 1.3em;
+            padding: 15px 40px;
+            margin: 10px;
+            background: #ff0000;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: not-allowed;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+            opacity: 0.6;
+        }
+
+        .info-box {
+            margin: 30px 0;
+            padding: 30px;
+            background: rgba(74, 158, 255, 0.1);
+            border: 2px solid #4a9eff;
+            border-radius: 10px;
+            color: #87ceeb;
+        }
+
+        .info-box h2 {
+            color: #4a9eff;
+            margin-bottom: 20px;
+        }
+
+        .info-box p {
+            line-height: 1.8;
+            margin: 10px 0;
+        }
+
+        .feature-list {
+            text-align: left;
+            margin: 20px 0;
+            padding-left: 20px;
+        }
+
+        .feature-list li {
+            margin: 10px 0;
+            list-style: none;
+        }
+
+        .cta-button {
+            font-family: 'Courier New', monospace;
+            font-size: 1.5em;
+            padding: 20px 50px;
+            margin: 20px 10px;
+            background: #4a9eff;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 0 30px rgba(74, 158, 255, 0.5);
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .cta-button:hover {
+            background: #357abd;
+            transform: scale(1.05);
+            box-shadow: 0 0 50px rgba(74, 158, 255, 0.8);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5em;
+                letter-spacing: 1px;
+            }
+            .countdown {
+                font-size: 3em;
+            }
+            .demo-banner {
+                font-size: 0.9em;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-banner">
+        ⚠️ VISUAL DEMO ONLY - This is a non-functional preview. Download and run locally for full functionality! ⚠️
+    </div>
+
+    <div class="container">
+        <h1>⚠ DEAD MAN'S TRIGGER ⚠</h1>
+        <div class="warning">EDUCATIONAL DEMONSTRATION</div>
+
+        <div class="countdown">23:59:42</div>
+
+        <div class="controls">
+            <button class="btn" disabled>CHECK-IN / RESET</button>
+            <button class="btn" disabled>DISARM & EDIT</button>
+        </div>
+
+        <div class="info-box">
+            <h2>📖 What is a Dead Man's Trigger?</h2>
+            <p>
+                A <strong>dead man's trigger</strong> (or dead man's switch) is an automated system that activates
+                when you <em>fail to check in</em> regularly. It's like a countdown timer that resets when you prove you're alive.
+            </p>
+            <p>
+                If you don't check in before the timer expires, the system automatically sends emails with your secret message,
+                files, and important information to designated recipients.
+            </p>
+
+            <h2 style="margin-top: 30px;">✨ Features of This Implementation</h2>
+            <ul class="feature-list">
+                <li>🖥️ <strong>Server-side countdown</strong> - Runs 24/7, even when your browser is closed</li>
+                <li>📧 <strong>Automatic email sending</strong> - No manual intervention required</li>
+                <li>📎 <strong>File attachments</strong> - Include important documents automatically</li>
+                <li>💾 <strong>Persistent storage</strong> - SQLite database survives server restarts</li>
+                <li>🌐 <strong>Simple web interface</strong> - Easy setup from any browser</li>
+                <li>🎮 <strong>Demo mode</strong> - Test locally without email setup</li>
+            </ul>
+
+            <h2 style="margin-top: 30px;">🚀 Try It Yourself</h2>
+            <p>This is an <strong>educational open-source project</strong>. You can:</p>
+            <ul class="feature-list">
+                <li>✅ Download and run it locally</li>
+                <li>✅ See exactly how it works (no hidden code)</li>
+                <li>✅ Test in demo mode (no email required)</li>
+                <li>✅ Learn about server-side automation</li>
+                <li>✅ Customize for your needs</li>
+            </ul>
+
+            <div style="margin-top: 30px; text-align: center;">
+                <a href="https://github.com/Ringmast4r/DEAD-MANS-TRIGGER" class="cta-button">
+                    📥 Get the Code on GitHub
+                </a>
+            </div>
+
+            <div style="margin-top: 20px; padding: 20px; background: rgba(255, 0, 0, 0.1); border: 2px solid #ff0000; border-radius: 10px;">
+                <h3 style="color: #ff6666; margin-bottom: 15px;">⚠️ Security Warning</h3>
+                <p style="color: #ff9999; font-size: 0.95em;">
+                    This is an <strong>educational demonstration</strong>. The public version intentionally lacks
+                    production-level security features for learning purposes.
+                    <strong>Do not use for sensitive data without implementing proper security measures.</strong>
+                </p>
+                <p style="color: #ff9999; font-size: 0.95em; margin-top: 10px;">
+                    See the README for required security improvements before production use.
+                </p>
+            </div>
+
+            <h2 style="margin-top: 30px;">🎓 Perfect For Learning</h2>
+            <p>Great educational resource for understanding:</p>
+            <ul class="feature-list">
+                <li>📚 Server-side timers and cron jobs</li>
+                <li>📚 Node.js + Express backend development</li>
+                <li>📚 Email delivery via SendGrid API</li>
+                <li>📚 Database persistence with SQLite</li>
+                <li>📚 Dead man's switch concept implementation</li>
+            </ul>
+
+            <div style="margin-top: 30px; padding: 15px; background: rgba(74, 158, 255, 0.15); border-left: 4px solid #4a9eff; text-align: left;">
+                <strong style="color: #4a9eff;">Quick Start (60 seconds):</strong>
+                <pre style="margin-top: 10px; color: #87ceeb; font-size: 0.9em; overflow-x: auto;">
+git clone https://github.com/Ringmast4r/DEAD-MANS-TRIGGER.git
+cd DEAD-MANS-TRIGGER
+npm install
+npm start
+
+# Visit http://localhost:3000
+# Runs in demo mode (no email setup needed!)</pre>
+            </div>
+        </div>
+
+        <div style="margin: 30px 0; color: #666; font-size: 0.9em;">
+            <p>Built by ringmast4r</p>
+            <p style="margin-top: 5px;">MIT License - Free and Open Source</p>
+        </div>
+    </div>
+
+    <script>
+        // Animated countdown (purely visual)
+        let hours = 23, minutes = 59, seconds = 42;
+        setInterval(() => {
+            seconds--;
+            if (seconds < 0) {
+                seconds = 59;
+                minutes--;
+            }
+            if (minutes < 0) {
+                minutes = 59;
+                hours--;
+            }
+            if (hours < 0) {
+                hours = 0;
+                minutes = 0;
+                seconds = 0;
+            }
+            document.querySelector('.countdown').textContent =
+                `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }, 1000);
+    </script>
+</body>
+</html>
